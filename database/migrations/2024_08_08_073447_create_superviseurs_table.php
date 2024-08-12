@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('superviseurs', function (Blueprint $table) {
             $table->id();
+            $table->uuid();
             $table->string('nom');
             $table->string('prenom');
             $table->string('email')->unique();
