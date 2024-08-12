@@ -39,6 +39,6 @@ class registerController extends Controller
             'message' => 'Utilisateur enregistré avec succès',
             'user' => new UserResources($user),
             'token' => $token
-        ], 200);
+        ], 201);
     }
 }
