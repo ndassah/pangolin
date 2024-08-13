@@ -5,12 +5,19 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResources;
 use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class registerController extends Controller
 {
+
+    protected AuthService $authservice;
+
+    public function __construct(AuthService $authservice) {
+        $this->authservice = $authservice;
+    }
     
     public function register(Request $request)
     {
@@ -24,14 +31,7 @@ class registerController extends Controller
         ]);
 
         // Création   
-        $user = User::create([
-            'uuid'=> Str::uuid(),
-            'nom' => $request->nom,
-            'prenom'=>$request->prenom,
-            'email' => $request->email,
-            'telephone'=>$request->telephone,
-            'password' => Hash::make($request->password),
-        ]);
+        $user =$this->authservice->register($request);
 
         $token = $user->createToken('pangolin')->plainTextToken;
         // Retourner une réponse (par exemple, un token d'authentification)

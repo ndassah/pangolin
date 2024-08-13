@@ -2547,3 +2547,7 @@ Did you mean one of these?
 #3 C:\\xampp\\php\\www\\Stago\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
 #4 {main}
 "} 
+[2024-08-13 11:36:27] local.ERROR: Trait "App\Models\Has" not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait \"App\\Models\\Has\" not found at C:\\xampp\\php\\www\\Stago\\app\\Models\\User.php:12)
+[stacktrace]
+#0 {main}
+"} 
