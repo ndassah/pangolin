@@ -22,7 +22,7 @@ class AuthService{
     }
 
     public function login(object $request) : ? User{
-        $user = User::where('emmail',$request->email)->first();
+        $user = User::where('email',$request->email)->first();
         if($user && Hash::check($request->password,$user->password)){
             return $user;
         }

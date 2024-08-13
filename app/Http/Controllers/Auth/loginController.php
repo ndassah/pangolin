@@ -37,6 +37,14 @@ class loginController extends Controller
 
         $token = $user->createToken('pangolin')->plainTextToken;
         // Retourner une réponse (par exemple, un token d'authentification)
+
+        return response([
+            'message' => 'Utilisateur retouvée ',
+            'results' =>[
+                'user' => new UserResources($user),
+                'token' => $token
+            ]
+        ], 201);
        
     }
 }

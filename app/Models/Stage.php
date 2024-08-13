@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Stage extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'service',
+        'date_debut',
+        'date_fin',
+        'id_stagiaire',
+    ];
 }

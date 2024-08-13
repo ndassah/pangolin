@@ -15,7 +15,6 @@ class Stagiaire extends Model
     protected $fillable = [
         'nom',
         'prenom',
-        'date_naissance',
         'email',
         'telephone',
         'password',

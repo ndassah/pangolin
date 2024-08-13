@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('date_fin')->nullable();
             $table->enum('status', ['encours', 'terminee', 'echouee']);
             $table->foreignId('stagiaire_id')->nullable()->constrained('stagiaires')->onDelete('set null');
+            $table->foreignId('id_activites')->constrained('activites')->onDelete('cascade');
             $table->timestamps();
         });
     }

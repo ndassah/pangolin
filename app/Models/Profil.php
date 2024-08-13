@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Profil extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'uuid',
+        'id_stagiaire',
+    ];
 }

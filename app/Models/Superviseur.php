@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Superviseur extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'uuid',
+        'nom',
+        'prenom',
+        'email',
+        'telephone',
+        'password',
+    ];
 }

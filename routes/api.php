@@ -18,5 +18,5 @@ use spatie\permission\Models\Permission;
 |
 */
 
-Route::post('register',[registerController::class,'register']);
-Route::post('login',[loginController::class,'login']);
+Route::post('register',[registerController::class,'register'])->name('api.register');
+Route::post('login',[loginController::class,'login'])->name('api.login');
