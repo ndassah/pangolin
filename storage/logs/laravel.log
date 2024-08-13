@@ -3469,3 +3469,15 @@ Did you mean one of these?
 #25 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
 #26 {main}
 "} 
+[2024-08-13 19:45:05] local.ERROR: syntax error, unexpected token "::" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"::\" at C:\\xampp\\php\\www\\Stago\\app\\Models\\Tache.php:26)
+[stacktrace]
+#0 {main}
+"} 
+[2024-08-13 19:51:29] local.ERROR: syntax error, unexpected identifier "‌namespace" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected identifier \"‌namespace\" at C:\\xampp\\php\\www\\Stago\\app\\Models\\Service.php:4)
+[stacktrace]
+#0 {main}
+"} 
+[2024-08-13 19:51:43] local.ERROR: syntax error, unexpected identifier "‌namespace" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected identifier \"‌namespace\" at C:\\xampp\\php\\www\\Stago\\app\\Models\\Service.php:4)
+[stacktrace]
+#0 {main}
+"} 

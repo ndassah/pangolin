@@ -19,4 +19,12 @@ class Stagiaire extends Model
         'telephone',
         'password',
     ];
+    public function tache()
+    {
+        return $this->hasMany(Tache::class);
+    }
+    public function superviseur()
+    {
+        return $this->belongsTo(Superviseur::class);
+    }
 }

@@ -21,4 +21,8 @@ class Tache extends Model
     {
         return $this->belongsTo(Activite::class);
     }
+    public function stagiaire()
+    {
+        return $this->belongsTo(Stagiaire::class);
+    }
 }

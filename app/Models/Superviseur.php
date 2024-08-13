@@ -16,4 +16,8 @@ class Superviseur extends Model
         'telephone',
         'password',
     ];
+    public function stagiaire()
+    {
+        return $this->hasMany(Stagiaire::class);
+    }
 }
