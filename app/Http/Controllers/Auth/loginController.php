@@ -7,6 +7,7 @@ use App\Http\Resources\UserResources;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 class loginController extends Controller
@@ -17,7 +18,8 @@ class loginController extends Controller
     public function __construct(AuthService $authservice) {
         $this->authservice = $authservice;
     }
-
+    
+    //Login
     public function login(Request $request) 
     {
         // Validation   
@@ -43,6 +45,44 @@ class loginController extends Controller
             'results' =>[
                 'user' => new UserResources($user),
                 'token' => $token
+            ]
+        ], 201);
+       
+    }
+
+    //Otp
+    public function otp(Request $request) 
+    {
+    
+        // get the user
+        $user =auth()->user();
+
+        //generer le otp
+        $otp = $this->authservice->otp($user);
+
+        return response([
+            'message' => 'verification reussi ',
+        ], 201);
+       
+    }
+
+    //verification du code otp
+    public function verify(Request $request) :Response
+    {
+        $request->validate([
+            'otp'=> 'required|numeric',
+        ]);
+    
+        // get the user
+        $user =auth()->user();
+
+        //verifier le otp code
+        $user = $this->authservice->verify($user,$request);
+
+        return response([
+            'message' => 'verification du opt reussi ',
+            'result'=>[
+                 'user' => new UserResources($user)
             ]
         ], 201);
        

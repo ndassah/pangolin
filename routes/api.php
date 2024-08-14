@@ -20,3 +20,8 @@ use spatie\permission\Models\Permission;
 
 Route::post('register',[registerController::class,'register'])->name('api.register');
 Route::post('login',[loginController::class,'login'])->name('api.login');
+
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('otp',[loginController::class,'otp'])->name('api.otp');
+    Route::post('verify',[loginController::class,'verify'])->name('api.otp.verify'); 
+});
