@@ -41,4 +41,18 @@ class registerController extends Controller
             'token' => $token
         ], 201);
     }
+
+    //afficher un user par son id
+    public function show($id){
+        $user = User::Select(
+            'nom',
+            'prenom',
+            'email',
+            'telephone',
+            'password',
+            
+        );
+    }
+
+    //afficher 
 }

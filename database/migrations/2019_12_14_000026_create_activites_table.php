@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom_activites');
             $table->foreignId('id_service')->constrained('services')->onDelete('cascade');
+            $table->text('description');
             $table->timestamps();
         });
     }

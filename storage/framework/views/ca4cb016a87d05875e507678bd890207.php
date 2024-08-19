@@ -9,19 +9,25 @@
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
 <p>Bonjour <?php echo e($user->nom); ?>,</p>
+
+<?php if($otp->type=='verification'): ?>
+Nous avons recus votre demande de verification de votre compte pangolin par votre adresse e-mail.
+Votre code de verification Pangolin est le :
+<?php endif; ?>
+
+<?php if($otp->type=='password-reset'): ?>
+Nous avons reçu votre demande de réinitialisation de votre mot de passe.
+Vous pouvez utiliser ce code pour réinitialiser votre mot de passe :
+<?php endif; ?> 
 <p>
-    Nous avons recus votre demande de verification de votre compte pangolin par votre adresse e-mail. <br>
-    Votre code de verification Pangolin est le :
-</p>
-<p>
-    <strong><?php echo e($code); ?></strong>
+    <strong><?php echo e($otp->code); ?></strong>
 </p>
 <h4>
     veuillez ne pas partager ce code avec quiconque.
 </h4>
 Merci,<br>
-<?php echo e(config('app.name')); ?>
 
+<p style="color: #1fc5e2; font-size: 30px; font-weight: bold"> <?php echo e(config('app.name')); ?></p>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalaa758e6a82983efcbf593f765e026bd9)): ?>

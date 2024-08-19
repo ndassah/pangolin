@@ -27,4 +27,9 @@ class Stagiaire extends Model
     {
         return $this->belongsTo(Superviseur::class);
     }
+
+    public function Service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

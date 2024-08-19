@@ -9,7 +9,8 @@ class Service extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nom_service',
+        'nom_services',
+        'id_direction'
     ];
 
     public function activites()
@@ -20,6 +21,10 @@ class Service extends Model
     public function direction()
     {
         return $this->belongsTo(Direction::class);
+    }
+    public function stagiaire()
+    {
+        return $this->hasMany(Stagiaire::class);
     }
 
 }

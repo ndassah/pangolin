@@ -34,17 +34,32 @@ class AuthService{
         return null;
     }
 
-    public function otp(User $user): Otp{
+    public function otp(User $user, string  $type = 'verification'): Otp{
+
+        //anti spam
+        $essai = 3;
+        $time = Carbon::now()->subMinutes(30);
+
+        $count = Otp::where([
+            'user_id' => $user->id,
+            'type' => $type,
+            'active' => 1
+        ])->where('created_at','>=', $time)->count();
+
+        if($count >= $essai){
+            abort(422, 'Trop de tentatives, veuillez reessayer plustard ');
+        }
+
         $code = random_int(100000,999999); //creation d'un code aleatoire
         $otp = Otp::create([
             'user_id' => $user->id,
-            'type' => 'verification',
+            'type' =>$type,
             'code' => $code,
             'active' => 1
         ]);
 
          //envoi de l'email avec le code
-         Mail::to($user)->send(new OtpMail($user, $code));
+         Mail::to($user)->send(new OtpMail($user, $otp));
 
         return $otp;
     }
@@ -54,7 +69,8 @@ class AuthService{
         $opt = Otp::where([
             'user_id' => $user->id,
             'code' => $request->otp,
-            'active'=>1
+            'active'=>1,
+            'type'=>'verification',
         ])->first();
 
         if(!$opt){
@@ -69,6 +85,37 @@ class AuthService{
         $opt->updated_at = Carbon::now();
         $opt->update();
 
+        return $user;
+    }
+
+    public function getUserByEmail(string $email):User{
+        return User::where('email',$email)->first();
+    }
+
+    public function resetPassword(User $user, object $request):User{
+        //validation de code otp
+        $opt = Otp::where([
+            'user_id' => $user->id,
+            'code' => $request->otp,
+            'active'=>1,
+            'type'=>'password-reset',
+        ])->first();
+
+        if(!$opt){
+            abort(422, 'le code otp n\'est pas correct');
+         }
+
+         $user->password = $request->password;
+         $user->updated_at = Carbon::now();
+         $user->update();
+
+         $opt->active = 0;
+         $opt->updated_at = Carbon::now();
+         $opt->update();
+        //nouveau password
+
+
+        //return user
         return $user;
     }
 }

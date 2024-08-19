@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Activite extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'nom_activites',
+        'id_service',
+        'description'
+    ];
+
 
     public function taches()
     {
