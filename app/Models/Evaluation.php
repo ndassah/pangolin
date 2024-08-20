@@ -10,11 +10,12 @@ class Evaluation extends Model
     use HasFactory;
     protected $fillable = [
         'id_stagiaire',
-        'id_tache',
+        'id_superviseur',
         'qualite_travail',
         'productivite',
         'aptitude',
         'engagement',
         'commmentaires',
+        'note_global'
     ];
 }

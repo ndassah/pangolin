@@ -5,16 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Stage extends Model
+class Historique extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nom_service',
-        'date_debut',
-        'date_fin',
+        'id_user',
+        'action',
+        'description',
     ];
-
-    public function stagiaire(){
-        return $this->hasMany(Stagiaire::class);
-    }
 }

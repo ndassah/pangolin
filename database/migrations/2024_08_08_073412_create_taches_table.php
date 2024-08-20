@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('taches', function (Blueprint $table) {
             $table->id();
+            $table->string('titre');
             $table->string('description');
-            $table->date('date_debut');
             $table->date('date_fin')->nullable();
             $table->enum('status', ['encours', 'terminee', 'echouee']);
             $table->foreignId('stagiaire_id')->nullable()->constrained('stagiaires')->onDelete('set null');

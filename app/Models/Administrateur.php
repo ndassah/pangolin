@@ -11,10 +11,17 @@ class Administrateur extends Model
 
     protected $fillable = [
         'uuid',
+        'user_id',
         'nom',
         'prenom',
         'email',
         'telephone',
         'password',
     ];
+
+    //relation avec le user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('stagiaires', function (Blueprint $table) {
             $table->id();
             $table->uuid();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nom');
             $table->string('prenom');
-            $table->date('date_naissance');
             $table->string('email')->unique();
             $table->integer('telephone');
             $table->string('password');

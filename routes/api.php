@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\activiteController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\registerController;
 use App\Http\Controllers\directionController;
 use App\Http\Controllers\serviceController;
+use App\Http\Controllers\StagiaireController;
+use App\Http\Controllers\SuperviseurController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use spatie\permission\Models\Role;
@@ -42,3 +45,20 @@ Route::post('direction',[directionController::class,'create'])->name('direction.
 Route::post('service',[serviceController::class,'create'])->name('service.create');
 
 Route::post('activites',[activiteController::class,'create'])->name('activite.create');
+
+
+// admin routes
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    Route::get('/admin/data', [AdminController::class, 'index']);
+});
+
+//superviseur routes
+Route::middleware(['auth:api', 'role:superviseur'])->group(function () {
+    Route::get('/superviseur/data', [SuperviseurController::class, 'index']);
+});
+
+
+//stagiaire routes
+Route::middleware(['auth:api', 'role:stagiaire'])->group(function () {
+    Route::get('/stagiaire/data', [StagiaireController::class, 'index']);
+});

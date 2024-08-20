@@ -9,6 +9,13 @@ class Rapport extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_stagiaire',
+        'id_tache',
+        'contenu',
+        'note',
     ];
+
+    //relation avec tache
+    public function tache(){
+        return $this->belongsTo(Tache::class);
+    }
 }

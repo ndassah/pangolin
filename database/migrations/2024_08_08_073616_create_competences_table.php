@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('competences', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_stagiaire')->constrained('stagiaires');
             $table->string('nom');
+            $table->decimal('niveau');
             $table->timestamps();
         });
     }

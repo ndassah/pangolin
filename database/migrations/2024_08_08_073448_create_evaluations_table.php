@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('evaluations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_stagiaire')->constrained('stagiaires')->onDelete('cascade');
-            $table->foreignId('id_tache')->constrained('taches')->onDelete('cascade');
+            $table->foreignId('id_superviseur')->constrained('superviseurs')->onDelete('cascade');
             $table->float('qualite_travail');
             $table->float('productivite');
             $table->float('aptitude');
             $table->float('engagement');
             $table->text('commentaires');
+            $table->float('note_global');
+
             $table->timestamps();
         });
     }

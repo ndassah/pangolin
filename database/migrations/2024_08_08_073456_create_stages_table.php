@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('stages', function (Blueprint $table) {
             $table->id();
-            $table->string('service');
+            $table->string('nom_service');
             $table->date('date_debut');
             $table->date('date_fin');
-            $table->foreignId('id_stagiaire')->constrained('stagiaires')->onDelete('cascade');
             $table->timestamps();
         });
     }

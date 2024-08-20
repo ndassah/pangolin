@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rapports', function (Blueprint $table) {
+        Schema::create('historiques', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_tache')->constrained('taches')->onDelete('cascade');
-            $table->text('contenu');
-            $table->decimal('note');
+            $table->foreignId('id_user')->constrained('users');
+            $table->string('action');
+            $table->text('description');
+            $table->timestamp('date_action');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rapports');
+        Schema::dropIfExists('historiques');
     }
 };

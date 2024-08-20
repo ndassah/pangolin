@@ -10,6 +10,13 @@ class Competence extends Model
     use HasFactory;
     protected $fillable = [
         'id',
+        'id_stagiaire',
         'nom',
+        'niveau'
     ];
+
+    //relation avec stagiaire
+    public function stagiaire(){
+        return $this->belongsTo(Stagiaire::class);
+    }
 }

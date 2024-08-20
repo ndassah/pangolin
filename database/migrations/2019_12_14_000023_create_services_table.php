@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom_services');
             $table->foreignId('id_direction')->constrained('directions')->onDelete('cascade');
+            $table->string('description');
             $table->timestamps();
         });
     }
