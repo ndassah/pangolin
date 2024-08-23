@@ -11,10 +11,12 @@ class Tache extends Model
     protected $fillable = [
         'titre',
         'description',
+        'date_debut',
         'date_fin',
         'status',
-        'statgiaire_id',
-        'id_activies',
+        'stagiaire_id',
+        'id_activites',
+        'id_superviseur'
     ];
 
     public function activite()

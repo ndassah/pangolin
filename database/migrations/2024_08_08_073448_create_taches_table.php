@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('titre');
             $table->string('description');
+            $table->date('date_debut');
             $table->date('date_fin')->nullable();
             $table->enum('status', ['encours', 'terminee', 'echouee']);
             $table->foreignId('stagiaire_id')->nullable()->constrained('stagiaires')->onDelete('set null');
             $table->foreignId('id_activites')->constrained('activites')->onDelete('cascade');
+            $table->foreignId('id_superviseur')->constrained('superviseurs')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('stages', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_service');
-            $table->date('date_debut');
+            $table->foreignId('id_service')->constrained('services')->onDelete('cascade');
+            $table->date('date_debut')->date.now();
             $table->date('date_fin');
             $table->timestamps();
         });

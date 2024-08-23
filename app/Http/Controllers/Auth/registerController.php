@@ -23,6 +23,7 @@ class registerController extends Controller
     {
         // Validation   
         $request->validate([
+            'role_id'=>'required|numeric|max:3',
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',

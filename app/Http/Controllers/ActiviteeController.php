@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Activite;
+use Illuminate\Http\Request;
+
+class ActiviteeController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $activitees = Activite::with('taches', 'stagiaire')->get();
+        return response()->json($activitees);
+
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nom_activites' => 'required|string|max:255',
+            'id_service'=>'required|numeric',
+            'description' => 'nullable|string',
+        ]);
+
+        $activitee = Activite::create($validated);
+
+        return response()->json($activitee->load('tache'), 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $activitee = Activite::with('tache', 'stagiaire')->findOrFail($id);
+        return response()->json($activitee);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $activitee = Activite::findOrFail($id);
+
+        $validated = $request->validate([
+            'nom_activites' => 'sometimes|string|max:255',
+            'id_service'=>'required',
+            'description' => 'nullable|string',
+        ]);
+
+        $activitee->update(array_filter($validated));
+
+        return response()->json($activitee->load('tache'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $activitee = Activite::findOrFail($id);
+        $activitee->delete();
+
+        return response()->json(null, 204);
+    }
+}

@@ -11,11 +11,7 @@ class Superviseur extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-        'nom',
-        'prenom',
-        'email',
-        'telephone',
-        'password',
+        'service_id',
     ];
 
     //relation avec stagiaire

@@ -3,29 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
-use App\Models\Direction;
 use Illuminate\Http\Request;
 
-class serviceController extends Controller
+class ServiceController extends Controller
 {
-    public function index(){
-        return Service::all();
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $services = Service::with('direction', 'stagiaires')->get();
+        return response()->json($services);
     }
 
-    public function create(Request $request){
-        $service = $request->validate([
-            'nom_services' => 'required|string|max:100',
-            'id_direction'=>'required|numeric',
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nom_services' => 'required|string|max:255',
+            'id_direction' => 'required|exists:directions,id',
+            'description' => 'required |string'
         ]);
 
-        Service::create($service);
+        $service = Service::create($validated);
 
-        return response([
-            'message' => 'Service cree avec success',
-        ], 201);
-
+        return response()->json($service->load('direction'), 201);
     }
-    public function show($id){
-        return Service::find($id);
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $service = Service::with('direction', 'stagiaires')->findOrFail($id);
+        return response()->json($service);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $service = Service::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'id_direction' => 'sometimes|exists:directions,id',
+            'description' => 'required|string',
+        ]);
+
+        $service->update(array_filter($validated));
+
+        return response()->json($service->load('direction'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $service = Service::findOrFail($id);
+        $service->delete();
+
+        return response()->json(null, 204);
     }
 }

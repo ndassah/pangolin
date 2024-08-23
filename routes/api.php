@@ -1,17 +1,16 @@
 <?php
 
-use App\Http\Controllers\activiteController;
+use App\Http\Controllers\ActiviteeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\registerController;
-use App\Http\Controllers\directionController;
-use App\Http\Controllers\serviceController;
+use App\Http\Controllers\DirectionController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\StageController;
 use App\Http\Controllers\StagiaireController;
 use App\Http\Controllers\SuperviseurController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\TacheController;
 use Illuminate\Support\Facades\Route;
-use spatie\permission\Models\Role;
-use spatie\permission\Models\Permission;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,25 +39,41 @@ Route::controller(loginController::class)->group(function(){
 });
 
 
-Route::post('direction',[directionController::class,'create'])->name('direction.create');
 
-Route::post('service',[serviceController::class,'create'])->name('service.create');
-
-Route::post('activites',[activiteController::class,'create'])->name('activite.create');
-
-
-// admin routes
+// admin role routes
 Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::get('/admin/data', [AdminController::class, 'index']);
 });
 
-//superviseur routes
+//superviseur role routes
 Route::middleware(['auth:api', 'role:superviseur'])->group(function () {
     Route::get('/superviseur/data', [SuperviseurController::class, 'index']);
 });
 
 
-//stagiaire routes
+//stagiaire role routes
 Route::middleware(['auth:api', 'role:stagiaire'])->group(function () {
     Route::get('/stagiaire/data', [StagiaireController::class, 'index']);
 });
+
+//stage routes
+Route::post('create_stage', [StageController::class,'store']);
+
+//stagiaire
+Route::post('create_stagiaire', [StagiaireController::class,'store']);
+
+//direction
+Route::post('create_direction', [DirectionController::class,'store']);
+
+//service
+Route::post('create_service', [ServiceController::class,'store']);
+
+//superiseur
+Route::post('create_superviseur', [SuperviseurController::class,'store']);
+
+//activites
+Route::post('create_activites', [ActiviteeController::class,'store']);
+
+//tache
+Route::post('create_tache', [TacheController::class,'store']);
+

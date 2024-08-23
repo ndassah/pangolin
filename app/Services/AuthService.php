@@ -15,6 +15,7 @@ class AuthService{
     public function register(object $request) : User{
         $user = User::create([
             'uuid'=> Str::uuid(),
+            'role_id'=> $request->role_id,
             'nom' => $request->nom,
             'prenom'=>$request->prenom,
             'email' => $request->email,
