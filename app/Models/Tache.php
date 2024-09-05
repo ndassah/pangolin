@@ -11,12 +11,15 @@ class Tache extends Model
     protected $fillable = [
         'titre',
         'description',
-        'date_debut',
-        'date_fin',
+        'duree prevue',
+        'duree effective',
         'status',
+        'feedback',
+        'note',
+        'validation_superviseur',
         'stagiaire_id',
         'id_activites',
-        'id_superviseur'
+        'id_superviseur',
     ];
 
     public function activite()
@@ -31,5 +34,10 @@ class Tache extends Model
     //relation avec rapport
     public function rapport(){
         return $this->hasOne(Rapport::class);
+    }
+
+    //relation avec superviseur
+    public function superviseur(){
+        return $this->belongsTo(Superviseur::class);
     }
 }

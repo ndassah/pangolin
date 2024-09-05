@@ -9,7 +9,6 @@ class Competence extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id',
         'id_stagiaire',
         'nom',
         'niveau'

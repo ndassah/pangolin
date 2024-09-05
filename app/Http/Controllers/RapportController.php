@@ -22,12 +22,14 @@ class RapportController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'id_tache'=>'required|numeric',
             'contenu' => 'required|string',
             'stagiaire_id' => 'required|exists:stagiaires,id',
             'superviseur_id' => 'required|exists:superviseurs,id',
         ]);
 
         $rapport = Rapport::create([
+            'id_tache' => $validated['id_tache'],
             'contenu' => $validated['content'],
             'stagiaire_id' => $validated['stagiaire_id'],
             'superviseur_id' => $validated['superviseur_id'],
@@ -54,12 +56,12 @@ class RapportController extends Controller
 
         $validated = $request->validate([
            // 'title' => 'sometimes|string|max:255',
-            'content' => 'sometimes|string',
+            'contenu' => 'sometimes|string',
         ]);
 
         $rapport->update(array_filter([
            // 'title' => $validated['title'] ?? $rapport->title,
-            'content' => $validated['content'] ?? $rapport->content,
+            'contenu' => $validated['contenu'] ?? $rapport->contenu,
         ]));
 
         return response()->json($rapport->load(['stagiaire', 'superviseur']));

@@ -12,7 +12,7 @@ class DirectionController extends Controller
      */
     public function index()
     {
-        $directions = Direction::with('services')->get();
+        $directions = Direction::all();//with('services')->get();
         return response()->json($directions);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
 use App\Models\Stage;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class StageController extends Controller
      */
     public function index()
     {
-        $stages = Stage::with(['stagiaires', 'superviseur'])->get();
+        $stages = Stage::with(['service'])->get();
         return response()->json($stages);
     }
 
@@ -23,8 +24,8 @@ class StageController extends Controller
     {
         $validated = $request->validate([
             'id_service' => 'required|string|max:255',
-            'date_debut'=>'date',
-            'date_fin'=>'date|after:date_debut',
+            'date_debut'=>'required|date',
+            'date_fin'=>'nullable|date|after_or_equal:date_debut',
         ]);
 
         $stage = Stage::create([
@@ -53,17 +54,15 @@ class StageController extends Controller
         $stage = Stage::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'description' => 'nullable|string',
-            'start_date' => 'sometimes|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'id_service' => 'required|string|max:255',
+            'date_debut' => 'sometimes|date',
+            'date_fin' => 'nullable|date|after_or_equal:date_debut',
         ]);
 
         $stage->update(array_filter([
-            'title' => $validated['title'] ?? $stage->title,
-            'description' => $validated['description'] ?? $stage->description,
-            'start_date' => $validated['start_date'] ?? $stage->start_date,
-            'end_date' => $validated['end_date'] ?? $stage->end_date,
+            'id_service' => $validated['id_service'] ?? $stage->id_service,
+            'date_debut' => $validated['date_debut'] ?? $stage->date_debut,
+            'date_fin' => $validated['date_fin'] ?? $stage->date_fin,
         ]));
 
         return response()->json($stage->load(['superviseur']));

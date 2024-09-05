@@ -17,4 +17,9 @@ class Stage extends Model
     public function stagiaire(){
         return $this->hasMany(Stagiaire::class);
     }
+
+    //relation avec service
+    public function service(){
+        return $this->belongsTo(Service::class);
+    }
 }

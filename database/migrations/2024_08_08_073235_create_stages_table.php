@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_service')->constrained('services')->onDelete('cascade');
             $table->date('date_debut')->date.now();
-            $table->date('date_fin');
+            $table->date('date_fin')->nullable();
             $table->timestamps();
         });
     }

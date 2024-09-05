@@ -13,8 +13,16 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'admin', 'description' => 'Administrateur']);
-        Role::create(['name' => 'superviseur', 'description' => 'Superviseur']);
-        Role::create(['name' => 'stagiaire', 'description' => 'Stagiaire']);
+        $administrateur = Role::create(['name' =>'admin','description' => 'Administrateur']);
+        $superviseur = Role::create(['name' => 'superviseur', 'description' => 'Superviseur']);
+        $stagiaire = Role::create(['name' =>'stagiaire', 'description' => 'Stagiaire']);
+
+        $superviseur->givePermissionTo(['assign_task','edit_your_account','note']);
+
+        $administrateur->givePermissionTo([
+            'assign_task','edit_your_account','manage_user','edit_direction','edit_service','edit_task'
+        ]);
+    
+        $stagiaire->givePermissionTo(['edit_your_account',]);
     }
 }

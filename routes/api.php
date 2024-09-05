@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\registerController;
 use App\Http\Controllers\DirectionController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\StagiaireController;
@@ -58,22 +59,39 @@ Route::middleware(['auth:api', 'role:stagiaire'])->group(function () {
 
 //stage routes
 Route::post('create_stage', [StageController::class,'store']);
+Route::get('all_stages',[StageController::class,'index']);
 
 //stagiaire
 Route::post('create_stagiaire', [StagiaireController::class,'store']);
+Route::get('all_stagiaires',[StagiaireController::class,'index']);
+Route::post('update_stagiaire/{id}', [StagiaireController::class,'update']);
 
 //direction
 Route::post('create_direction', [DirectionController::class,'store']);
+Route::get('all_direction', [DirectionController::class,'index']);
+Route::post('update_direction/{id}', [DirectionController::class,'update']);
 
 //service
 Route::post('create_service', [ServiceController::class,'store']);
+Route::get('all_service', [ServiceController::class,'index']);
+Route::post('update_service/{id}', [ServiceController::class,'update']);
 
 //superiseur
 Route::post('create_superviseur', [SuperviseurController::class,'store']);
+Route::get('all_superviseurs',[SuperviseurController::class,'index']);
+Route::post('update_superviseur/{id}', [SuperviseurController::class,'update']);
 
 //activites
 Route::post('create_activites', [ActiviteeController::class,'store']);
+Route::get('all_activites', [ActiviteeController::class,'index']);
+Route::post('update_activites/{id}', [ActiviteeController::class,'update']);
 
 //tache
-Route::post('create_tache', [TacheController::class,'store']);
+Route::post('/taches/creer', [TacheController::class, 'creerEtAttribuerTache']);
+Route::post('/taches/{id}/terminer', [TacheController::class, 'terminerTache']);
+Route::post('/taches/{id}/valider', [TacheController::class, 'validerTache']);
+Route::get('/stagiaires/{id}/evaluer', [EvaluationController::class, 'evaluerStagiaire']);
+
+//utilisateur
+Route::get('all_users', [registerController::class,'index']);
 

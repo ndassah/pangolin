@@ -12,7 +12,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::with('direction', 'stagiaires')->get();
+        $services = Service::with('direction', /*'stagiaires'*/)->get();
         return response()->json($services);
     }
 
@@ -49,9 +49,9 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
+            'nom_services' => 'sometimes|string|max:255',
             'id_direction' => 'sometimes|exists:directions,id',
-            'description' => 'required|string',
+            'description' => 'string',
         ]);
 
         $service->update(array_filter($validated));

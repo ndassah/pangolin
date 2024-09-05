@@ -12,7 +12,7 @@ class ActiviteeController extends Controller
      */
     public function index()
     {
-        $activitees = Activite::with('taches', 'stagiaire')->get();
+        $activitees = Activite::with('service')->get();
         return response()->json($activitees);
 
     }
@@ -25,7 +25,7 @@ class ActiviteeController extends Controller
         $validated = $request->validate([
             'nom_activites' => 'required|string|max:255',
             'id_service'=>'required|numeric',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
         ]);
 
         $activitee = Activite::create($validated);
@@ -51,7 +51,7 @@ class ActiviteeController extends Controller
 
         $validated = $request->validate([
             'nom_activites' => 'sometimes|string|max:255',
-            'id_service'=>'required',
+            'id_service'=>'required|numeric',
             'description' => 'nullable|string',
         ]);
 

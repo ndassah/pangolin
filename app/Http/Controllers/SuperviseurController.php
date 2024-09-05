@@ -53,11 +53,11 @@ class SuperviseurController extends Controller
         $superviseur = Superviseur::findOrFail($id);
 
         $validated = $request->validate([
-            'department' => 'nullable|string|max:255',
+            'service_id' => 'required|exists:services,id',
         ]);
 
         $superviseur->update(array_filter([
-            'department' => $validated['department'] ?? $superviseur->department,
+            'service_id' => $validated['service_id'] ?? $superviseur->service_id,
         ]));
 
         return response()->json($superviseur->load('user'));

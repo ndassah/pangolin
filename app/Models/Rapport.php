@@ -12,6 +12,8 @@ class Rapport extends Model
         'id_tache',
         'contenu',
         'note',
+        'stagiaire_id',
+        'superviseur_id',
     ];
 
     //relation avec tache

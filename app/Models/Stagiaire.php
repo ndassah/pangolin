@@ -17,7 +17,6 @@ class Stagiaire extends Model
         'user_id',
         'stage_id',
         'service_id',
-
     ];
 
 
@@ -35,7 +34,7 @@ class Stagiaire extends Model
     //relation avec le superviseur
     public function superviseur()
     {
-        return $this->belongsTo(Superviseur::class);
+        return $this->hasOne(Superviseur::class);
     }
 
     //relation avec le service
@@ -46,17 +45,22 @@ class Stagiaire extends Model
     
     //relation avec le stage
     public function stage(){
-        return $this->belongsTo(Stage::class);
+        return $this->hasOne(Stage::class);
     }
 
     //relation avec le profil
-    public function profil(){
-        return $this->belongsTo(Profil::class);
-    }
+    // public function profil(){
+    //     return $this->belongsTo(Profil::class);
+    // }
 
     //relation avec le rapport
     public function rapport(){
         return $this->hasMany(Rapport::class);
+    }
+
+    //relation avec la notation
+    public function notation(){
+        return $this->hasMany(Notation::class);
     }
 
     //relation avec les competence

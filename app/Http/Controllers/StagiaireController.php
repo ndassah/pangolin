@@ -14,7 +14,7 @@ class StagiaireController extends Controller
      */
     public function index()
     {
-        $stagiaires = Stagiaire::with(['user', 'stage', 'activitees', 'rapports'])->get();
+        $stagiaires = Stagiaire::with(['user', 'stage', /*'activitees','rapports'*/ ])->get();
         return response()->json($stagiaires);
     }
 

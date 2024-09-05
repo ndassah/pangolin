@@ -9,13 +9,19 @@ class Evaluation extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_stagiaire',
-        'id_superviseur',
-        'qualite_travail',
-        'productivite',
-        'aptitude',
-        'engagement',
-        'commmentaires',
-        'note_global'
+        'tache_id',
+        'superviseur_id',
+        'note',
+        'feedback',
     ];
+
+    public function tache()
+    {
+        return $this->belongsTo(Tache::class);
+    }
+
+    public function superviseur()
+    {
+        return $this->belongsTo(Superviseur::class);
+    }
 }

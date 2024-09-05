@@ -23,7 +23,7 @@ class AdminController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'role' => 'required|string|in:admin', // Assurer que le rôle est bien 'admin'
+            'role' => 'required|string|in:administrateur', // Assurer que le rôle est bien 'admin'
         ]);
 
         // Vérifiez que le rôle est effectivement admin avant la création

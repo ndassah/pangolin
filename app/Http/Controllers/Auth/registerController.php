@@ -55,5 +55,9 @@ class registerController extends Controller
         );
     }
 
-    //afficher 
+    //afficher tout les user
+    public function index(){
+        $users = User::all();
+        return $users;
+    }
 }

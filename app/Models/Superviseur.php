@@ -20,6 +20,10 @@ class Superviseur extends Model
         return $this->hasMany(Stagiaire::class);
     }
 
+    //relation avec notation
+    public function notation(){
+        return $this->belongsTo(Notation::class);
+    }
     //relation avec service
     public function service(){
         return $this->belongsTo(Service::class);

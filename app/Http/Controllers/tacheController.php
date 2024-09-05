@@ -3,98 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tache;
+use App\Models\Stagiaire;
 use Illuminate\Http\Request;
 
 class TacheController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Créer une nouvelle tâche et l'attribuer à un stagiaire
+    public function creerEtAttribuerTache(Request $request)
     {
-        $taches = Tache::with(['stagiaire', 'superviseur'])->get();
-        return response()->json($taches);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'titre' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date_debut' => 'date',
-            'date_fin'=>'date|after:date_debut',
-            'status'=>'required|string',
+        $validatedData = $request->validate([
+            'description' => 'required|string|max:255',
+            'duree_prevue' => 'required|integer',
             'stagiaire_id' => 'required|exists:stagiaires,id',
-            'id_activites'=>'required|exists:activites,id',
-            'id_superviseur' => 'required|exists:superviseurs,id',
         ]);
 
-        $tache = Tache::create([
-            'titre' => $validated['titre'],
-            'description' => $validated['description'] ?? null,
-            'date_debut' => $validated['date_debut'],
-            'date_fin' => $validated['date_fin'] ?? null,
-            'status' => $validated['status'],
-            'stagiaire_id' => $validated['stagiaire_id'],
-            'id_activites' => $validated['id_activites'],
-            'id_superviseur' => $validated['id_superviseur'],
+        $tache = new Tache();
+        $tache->description = $validatedData['description'];
+        $tache->duree_prevue = $validatedData['duree_prevue'];
+        $tache->stagiaire_id = $validatedData['stagiaire_id'];
+        $tache->status = 'en cours';
+        $tache->save();
+
+        return response()->json(['message' => 'Tâche créée et attribuée avec succès.'], 201);
+    }
+
+    // Le stagiaire marque la tâche comme terminée et envoie un feedback
+    public function terminerTache(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'feedback' => 'required|string|max:500',
+            'duree_effective' => 'required|integer',
         ]);
 
-        return response()->json($tache->load(['stagiaire', 'superviseur']), 201);
+        $tache = Tache::find($id);
+
+        if (!$tache) {
+            return response()->json(['message' => 'Tâche introuvable'], 404);
+        }
+
+        $tache->feedback = $validatedData['feedback'];
+        $tache->duree_effective = $validatedData['duree_effective'];
+        $tache->status = 'terminée';
+        $tache->save();
+
+        return response()->json(['message' => 'Tâche marquée comme terminée.'], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Le superviseur valide la tâche comme bien faite et attribue une note
+    public function validerTache(Request $request, $id)
     {
-        $tache = Tache::with(['stagiaire', 'superviseur'])->findOrFail($id);
-        return response()->json($tache);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $tache = Tache::findOrFail($id);
-
-        $validated = $request->validate([
-            'titre' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date_debut' => 'date',
-            'date_fin'=>'date|after:date_debut',
-            'status'=>'required|string',
-            'stagiaire_id' => 'required|exists:stagiaires,id',
-            'id_activites'=>'required|exists:activites,id',
-            'id_superviseur' => 'required|exists:superviseurs,id',
+        $validatedData = $request->validate([
+            'note' => 'required|integer|min:0|max:100',
+            'validation_superviseur' => 'required|boolean',
         ]);
 
-        $tache->update(array_filter([
-            'titre' => $validated['titre'] ?? $tache->titre,
-            'description' => $validated['description'] ?? $tache->description,
-           'date_debut' => $validated['date_debut'] ?? $tache->date_debut,
-            'date_fin' => $validated['date_fin'] ?? null,
-            'status' => $validated['status'] ?? $tache->status,
-            'stagiaire_id' => $validated['stagiaire_id'] ?? $tache->stagiaire_id,
-            'id_activites' => $validated['id_activites'] ?? $tache->id_activites,
-            'id_superviseur' => $validated['id_superviseur'] ?? $tache->id_superviseur,
-        ]));
+        $tache = Tache::find($id);
 
-        return response()->json($tache->load(['stagiaire', 'superviseur']));
-    }
+        if (!$tache) {
+            return response()->json(['message' => 'Tâche introuvable'], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $tache = Tache::findOrFail($id);
-        $tache->delete();
+        $tache->note = $validatedData['note'];
+        $tache->validation_superviseur = $validatedData['validation_superviseur'];
+        $tache->save();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Tâche validée avec succès.'], 200);
     }
 }

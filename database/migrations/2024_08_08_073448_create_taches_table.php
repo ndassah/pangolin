@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('titre');
             $table->string('description');
-            $table->date('date_debut');
-            $table->date('date_fin')->nullable();
-            $table->enum('status', ['encours', 'terminee', 'echouee']);
+            $table->date('duree prevue');//en minute
+            $table->date('duree effective')->nullable();// en minute
+            $table->enum('status', ['en cours', 'terminee', 'echouee'])->default('en cours');
+            $table->text('feedback')->nullable();
+            $table->integer('note')->nullable(); // Note sur 100
+            $table->boolean('validation_superviseur')->default(false);
             $table->foreignId('stagiaire_id')->nullable()->constrained('stagiaires')->onDelete('set null');
             $table->foreignId('id_activites')->constrained('activites')->onDelete('cascade');
             $table->foreignId('id_superviseur')->constrained('superviseurs')->onDelete('cascade');

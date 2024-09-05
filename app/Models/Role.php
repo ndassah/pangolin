@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Contracts\Permission;
+use Spatie\Permission\Traits\HasPermissions;
 
 class Role extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPermissions;
     protected $fillable = ['name', 'description'];
 
     public function permissions()

@@ -22,15 +22,15 @@ class CompetenceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'stagiaire_id' => 'required|exists:stagiaires,id',
+            'id_stagiaire' => 'required|exists:stagiaires,id',
+            'nom' => 'required|string|max:255',
+            'niveau' => 'nullable|string',
         ]);
 
         $competence = Competence::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'stagiaire_id' => $validated['stagiaire_id'],
+            'nom' => $validated['nom'],
+            'niveau' => $validated['niveau'] ?? null,
+            'id_stagiaire' => $validated['id_stagiaire'],
         ]);
 
         return response()->json($competence->load('stagiaire'), 201);
@@ -53,13 +53,14 @@ class CompetenceController extends Controller
         $competence = Competence::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'description' => 'nullable|string',
+            'id_stagiaire' => 'sometimes|string|max:255',
+            'nom' => 'nullable|string',
+            'niveau' => 'nullable|numeric',
         ]);
 
         $competence->update(array_filter([
-            'name' => $validated['name'] ?? $competence->name,
-            'description' => $validated['description'] ?? $competence->description,
+            'nom' => $validated['nom'] ?? $competence->name,
+            'niveau' => $validated['niveau'] ?? $competence->description,
         ]));
 
         return response()->json($competence->load('stagiaire'));
