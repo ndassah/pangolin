@@ -13,19 +13,25 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthService{
     public function register(object $request) : User{
+        $formattedPhone = $this->formatPhoneNumber($request->telephone);
         $user = User::create([
             'uuid'=> Str::uuid(),
-            'role_id'=> $request->role_id,
+            'role_id'=>$request->role_id,
             'nom' => $request->nom,
             'prenom'=>$request->prenom,
             'email' => $request->email,
-            'telephone'=>$request->telephone,
+            'telephone'=>$formattedPhone,
             'password' => Hash::make($request->password),
         ]);
         //envoi d'un code de verification
         $this->otp($user);
         return $user;
     }
+    public function formatPhoneNumber(string $phoneNumber): string
+{
+    // Enlève tous les caractères non numériques
+    return preg_replace('/\D/', '', $phoneNumber);
+}
 
     public function login(object $request) : ? User{
         $user = User::where('email',$request->email)->first();
@@ -75,7 +81,7 @@ class AuthService{
         ])->first();
 
         if(!$opt){
-           abort(422, 'Invalid verification code');
+           abort(422, 'code de verification invalide');
         }
 
         //update user

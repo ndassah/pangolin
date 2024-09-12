@@ -21,12 +21,13 @@ class registerController extends Controller
     
     public function register(Request $request)
     {
+        
         // Validation   
         $request->validate([
-            'role_id'=>'required|numeric|max:3',
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'role_id'=>'required|exists:roles,id',
+            'nom' => 'required|string|max:20',
+            'prenom' => 'required|string|max:20',
+            'email' => 'required|string|email|max:100|unique:users',
             'telephone'=>'required|integer',
             'password' => 'required|string|min:8',
         ]);

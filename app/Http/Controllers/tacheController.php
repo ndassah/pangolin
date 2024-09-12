@@ -2,37 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activite;
 use App\Models\Tache;
 use App\Models\Stagiaire;
 use Illuminate\Http\Request;
 
 class TacheController extends Controller
 {
-    // Créer une nouvelle tâche et l'attribuer à un stagiaire
+   
+    // Créer une nouvelle tâche (sans attribution directe à un stagiaire)
     public function creerEtAttribuerTache(Request $request)
     {
         $validatedData = $request->validate([
+            'titre' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'duree_prevue' => 'required|integer',
-            'stagiaire_id' => 'required|exists:stagiaires,id',
+            'duree_prevue' => 'required|date',
+            'id_activites' => 'required|exists:activites,id',
+            'id_superviseur' => 'required|exists:superviseurs,id',
         ]);
 
         $tache = new Tache();
+        $tache->titre = $validatedData['titre'];
         $tache->description = $validatedData['description'];
         $tache->duree_prevue = $validatedData['duree_prevue'];
-        $tache->stagiaire_id = $validatedData['stagiaire_id'];
+        $tache->id_activites = $validatedData['id_activites'];
+        $tache->id_superviseur = $validatedData['id_superviseur'];
         $tache->status = 'en cours';
         $tache->save();
 
-        return response()->json(['message' => 'Tâche créée et attribuée avec succès.'], 201);
+        // Mise à jour du pourcentage de l'activité liée après la création de la tâche
+        $this->mettreAJourPourcentageActivite($tache->id_activites);
+
+        return response()->json(['message' => 'Tâche créée avec succès.'], 201);
     }
 
-    // Le stagiaire marque la tâche comme terminée et envoie un feedback
+    // Marquer une tâche comme terminée avec feedback du stagiaire
     public function terminerTache(Request $request, $id)
     {
         $validatedData = $request->validate([
             'feedback' => 'required|string|max:500',
-            'duree_effective' => 'required|integer',
+            'duree_effective' => 'required|date',
         ]);
 
         $tache = Tache::find($id);
@@ -46,10 +55,13 @@ class TacheController extends Controller
         $tache->status = 'terminée';
         $tache->save();
 
+        // Mise à jour du pourcentage de l'activité liée après la tâche terminée
+        $this->mettreAJourPourcentageActivite($tache->id_activites);
+
         return response()->json(['message' => 'Tâche marquée comme terminée.'], 200);
     }
 
-    // Le superviseur valide la tâche comme bien faite et attribue une note
+    // Validation de la tâche par le superviseur avec une note
     public function validerTache(Request $request, $id)
     {
         $validatedData = $request->validate([
@@ -68,5 +80,95 @@ class TacheController extends Controller
         $tache->save();
 
         return response()->json(['message' => 'Tâche validée avec succès.'], 200);
+    }
+
+    // Mettre à jour une tâche existante
+    public function mettreAJourTache(Request $request, $tache_id)
+    {
+        $tache = Tache::find($tache_id);
+
+        if (!$tache) {
+            return response()->json(['message' => 'Tâche introuvable'], 404);
+        }
+
+        $request->validate([
+            'titre' => 'required|string|max:255',
+            'description' => 'required|string',
+            'duree_prevue' => 'required|date_format:H:i',
+            'statut' => 'required|in:en cours,terminée',
+            'note' => 'nullable|numeric|min:0|max:100',
+        ]);
+
+        $tache->titre = $request->input('titre');
+        $tache->description = $request->input('description');
+        $tache->duree_prevue = $request->input('duree_prevue');
+        $tache->status = $request->input('statut');
+        $tache->note = $request->input('note');
+        $tache->save();
+
+        // Mise à jour du pourcentage de l'activité liée si nécessaire
+        $this->mettreAJourPourcentageActivite($tache->id_activites);
+
+        return response()->json(['message' => 'Tâche mise à jour avec succès', 'tache' => $tache], 200);
+    }
+
+    // Supprimer une tâche
+    public function supprimerTache($tache_id)
+    {
+        $tache = Tache::find($tache_id);
+
+        if (!$tache) {
+            return response()->json(['message' => 'Tâche introuvable'], 404);
+        }
+
+        $activite_id = $tache->id_activites;
+        $tache->delete();
+
+        // Mise à jour du pourcentage de l'activité liée après la suppression
+        $this->mettreAJourPourcentageActivite($activite_id);
+
+        return response()->json(['message' => 'Tâche supprimée avec succès'], 200);
+    }
+
+    // Afficher toutes les tâches d'un stagiaire (via ses travaux)
+    public function afficherTachesStagiaire($stagiaire_id)
+    {
+        $taches = Tache::whereHas('travaux', function ($query) use ($stagiaire_id) {
+            $query->where('stagiaire_id', $stagiaire_id);
+        })->get();
+
+        return response()->json($taches, 200);
+    }
+
+    // Afficher toutes les tâches en cours
+    public function afficherTachesEnCours()
+    {
+        $tachesEnCours = Tache::where('status', 'en cours')->with('travaux')->get();
+
+        return response()->json($tachesEnCours, 200);
+    }
+
+    // Afficher toutes les tâches terminées
+    public function afficherTachesTerminees()
+    {
+        $tachesTerminees = Tache::where('status', 'terminée')->with('travaux')->get();
+
+        return response()->json($tachesTerminees, 200);
+    }
+
+    // Mettre à jour le pourcentage de l'activité associée
+    private function mettreAJourPourcentageActivite($activite_id)
+    {
+        $activite = Activite::findOrFail($activite_id);
+        $totalTaches = $activite->taches()->count();
+        $tachesTerminees = $activite->taches()->where('status', 'terminée')->count();
+
+        if ($totalTaches > 0) {
+            $activite->pourcentage = ($tachesTerminees / $totalTaches) * 100;
+        } else {
+            $activite->pourcentage = 0;
+        }
+
+        $activite->save();
     }
 }

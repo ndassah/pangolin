@@ -22,7 +22,7 @@ class DirectionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nom_direction' => 'required|string|max:255',
+            'nom_direction' => 'required|string|max:100',
         ]);
 
         $direction = Direction::create($validated);
@@ -47,7 +47,7 @@ class DirectionController extends Controller
         $direction = Direction::findOrFail($id);
 
         $validated = $request->validate([
-            'nom_direction' => 'sometimes|string|max:255',
+            'nom_direction' => 'sometimes|string|max:100',
         ]);
 
         $direction->update(array_filter($validated));

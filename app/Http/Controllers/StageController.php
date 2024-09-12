@@ -12,6 +12,7 @@ class StageController extends Controller
      * Display a listing of the resource.
      */
     public function index()
+
     {
         $stages = Stage::with(['service'])->get();
         return response()->json($stages);

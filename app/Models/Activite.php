@@ -11,7 +11,8 @@ class Activite extends Model
     protected $fillable = [
         'nom_activites',
         'id_service',
-        'description'
+        'description',
+        'pourcentage',
     ];
 
 
@@ -24,4 +25,6 @@ class Activite extends Model
     {
         return $this->belongsTo(Service::class);
     }
+
+    
 }

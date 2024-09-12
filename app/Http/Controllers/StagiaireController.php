@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use App\Models\Stagiaire;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -14,7 +15,11 @@ class StagiaireController extends Controller
      */
     public function index()
     {
-        $stagiaires = Stagiaire::with(['user', 'stage', /*'activitees','rapports'*/ ])->get();
+        // Récupérer les utilisateurs ayant le role_id correspondant à "stagiaire"
+        $stagiaires = User::whereHas('role', function ($query) {
+            $query->where('name', 'stagiaire');
+        })->get();
+
         return response()->json($stagiaires);
     }
 

@@ -23,14 +23,14 @@ class ActiviteeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nom_activites' => 'required|string|max:255',
+            'nom_activites' => 'required|string|max:100',
             'id_service'=>'required|numeric',
             'description' => 'required|string',
         ]);
 
         $activitee = Activite::create($validated);
 
-        return response()->json($activitee->load('tache'), 201);
+        return response()->json($activitee->load('taches'), 201);
     }
 
     /**
@@ -50,7 +50,7 @@ class ActiviteeController extends Controller
         $activitee = Activite::findOrFail($id);
 
         $validated = $request->validate([
-            'nom_activites' => 'sometimes|string|max:255',
+            'nom_activites' => 'sometimes|string|max:100',
             'id_service'=>'required|numeric',
             'description' => 'nullable|string',
         ]);

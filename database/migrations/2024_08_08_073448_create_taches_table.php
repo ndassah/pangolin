@@ -14,16 +14,16 @@ return new class extends Migration
         Schema::create('taches', function (Blueprint $table) {
             $table->id();
             $table->string('titre');
-            $table->string('description');
-            $table->date('duree prevue');//en minute
-            $table->date('duree effective')->nullable();// en minute
-            $table->enum('status', ['en cours', 'terminee', 'echouee'])->default('en cours');
+            $table->text('description');
+            $table->integer('duree_prevue');
+            $table->integer('duree_effective')->nullable();
+            $table->string('status')->default('en cours');
+            $table->decimal('pourcentage', 5, 2)->default(0);
             $table->text('feedback')->nullable();
-            $table->integer('note')->nullable(); // Note sur 100
+            $table->integer('note')->nullable();
             $table->boolean('validation_superviseur')->default(false);
-            $table->foreignId('stagiaire_id')->nullable()->constrained('stagiaires')->onDelete('set null');
-            $table->foreignId('id_activites')->constrained('activites')->onDelete('cascade');
-            $table->foreignId('id_superviseur')->constrained('superviseurs')->onDelete('cascade');
+            $table->foreignId('id_activites')->constrained('activites')->onDelete('cascade'); // Relation avec Activite
+            $table->foreignId('id_superviseur')->constrained('superviseurs')->onDelete('cascade'); // Relation avec Superviseur
             $table->timestamps();
         });
     }

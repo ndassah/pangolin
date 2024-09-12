@@ -26,7 +26,7 @@ class Stagiaire extends Model
     }
 
     //relation avec les tache
-    public function tache()
+    public function taches()
     {
         return $this->hasMany(Tache::class);
     }

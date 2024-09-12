@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Superviseur;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,9 +14,14 @@ class SuperviseurController extends Controller
      */
     public function index()
     {
-        $superviseurs = Superviseur::with('user')->get();
+        // Récupérer les utilisateurs ayant le role_id correspondant à "superviseur"
+        $superviseurs = User::whereHas('role', function ($query) {
+            $query->where('name', 'superviseur');
+        })->get();
+
         return response()->json($superviseurs);
     }
+
 
     /**
      * Store a newly created resource in storage.

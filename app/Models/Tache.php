@@ -16,8 +16,8 @@ class Tache extends Model
         'status',
         'feedback',
         'note',
+        'pourcentage',
         'validation_superviseur',
-        'stagiaire_id',
         'id_activites',
         'id_superviseur',
     ];
@@ -26,9 +26,10 @@ class Tache extends Model
     {
         return $this->belongsTo(Activite::class);
     }
-    public function stagiaire()
+
+    public function travaux()
     {
-        return $this->belongsTo(Stagiaire::class);
+        return $this->hasMany(Travaux::class);
     }
 
     //relation avec rapport
@@ -40,4 +41,11 @@ class Tache extends Model
     public function superviseur(){
         return $this->belongsTo(Superviseur::class);
     }
+
+    //relation avec evaluation
+    public function evaluation(){
+        return $this->hasMany(Evaluation::class);
+    }
+
+    
 }
