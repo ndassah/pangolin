@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('feedback')->nullable();
             $table->integer('note')->nullable();
             $table->boolean('validation_superviseur')->default(false);
-            $table->foreignId('id_activites')->constrained('activites')->onDelete('cascade'); // Relation avec Activite
+            $table->foreignId('activite_id')->constrained('activites')->onDelete('cascade'); // Relation avec Activite
             $table->foreignId('id_superviseur')->constrained('superviseurs')->onDelete('cascade'); // Relation avec Superviseur
             $table->timestamps();
         });

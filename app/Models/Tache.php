@@ -18,7 +18,7 @@ class Tache extends Model
         'note',
         'pourcentage',
         'validation_superviseur',
-        'id_activites',
+        'activite_id',
         'id_superviseur',
     ];
 

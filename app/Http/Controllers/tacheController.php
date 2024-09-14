@@ -16,8 +16,8 @@ class TacheController extends Controller
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'duree_prevue' => 'required|date',
-            'id_activites' => 'required|exists:activites,id',
+            'duree_prevue' => 'required|numeric',
+            'activite_id' => 'required|exists:activites,id',
             'id_superviseur' => 'required|exists:superviseurs,id',
         ]);
 
@@ -25,7 +25,7 @@ class TacheController extends Controller
         $tache->titre = $validatedData['titre'];
         $tache->description = $validatedData['description'];
         $tache->duree_prevue = $validatedData['duree_prevue'];
-        $tache->id_activites = $validatedData['id_activites'];
+        $tache->activite_id = $validatedData['activite_id'];
         $tache->id_superviseur = $validatedData['id_superviseur'];
         $tache->status = 'en cours';
         $tache->save();
@@ -41,7 +41,7 @@ class TacheController extends Controller
     {
         $validatedData = $request->validate([
             'feedback' => 'required|string|max:500',
-            'duree_effective' => 'required|date',
+            'duree_effective' => 'required|numeric',
         ]);
 
         $tache = Tache::find($id);

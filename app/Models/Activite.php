@@ -21,10 +21,11 @@ class Activite extends Model
         return $this->hasMany(Tache::class);
     }
 
+    
     public function service()
-    {
-        return $this->belongsTo(Service::class);
-    }
+{
+    return $this->belongsTo(Service::class, 'id_service');
+}
 
     
 }

@@ -14,12 +14,10 @@ class SuperviseurController extends Controller
      */
     public function index()
     {
-        // Récupérer les utilisateurs ayant le role_id correspondant à "superviseur"
-        $superviseurs = User::whereHas('role', function ($query) {
-            $query->where('name', 'superviseur');
-        })->get();
+       // Récupérer les utilisateurs ayant role_id = 3
+    $superviseurs = User::where('role_id', 3)->get();
 
-        return response()->json($superviseurs);
+    return response()->json($superviseurs);
     }
 
 

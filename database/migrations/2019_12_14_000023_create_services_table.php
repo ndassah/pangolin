@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('nom_services');
-            $table->foreignId('id_direction')->constrained('directions')->onDelete('cascade');
+            $table->foreignId('direction_id')->constrained('directions')->onDelete('cascade');
             $table->string('description');
             $table->timestamps();
         });

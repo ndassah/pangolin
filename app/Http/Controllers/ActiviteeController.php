@@ -12,10 +12,26 @@ class ActiviteeController extends Controller
      */
     public function index()
     {
-        $activitees = Activite::with('service')->get();
+        $activitees = Activite::with(['taches', 'service'])->get()->map(function ($activitee) {
+            // Récupérer le nombre total de tâches
+            $totalTaches = $activitee->taches->count();
+            // Récupérer le nombre de tâches terminées
+            $tachesTerminees = $activitee->taches->where('statut', 'terminée')->count();
+            // Calculer le pourcentage réalisé
+            $pourcentageRealise = $totalTaches > 0 ? ($tachesTerminees / $totalTaches) * 100 : 0;
+    
+            return [
+                'nom_activites' => $activitee->nom_activites,
+                'description' => $activitee->description,
+                'service' => $activitee->service ? $activitee->service->nom_services : 'Non défini',
+                'nombre_total_taches' => $totalTaches,  // Ajouter le nombre total de tâches
+                'pourcentageRealise' => number_format($pourcentageRealise, 2) . '%'
+            ];
+        });
+    
         return response()->json($activitees);
-
     }
+    
 
     /**
      * Store a newly created resource in storage.
