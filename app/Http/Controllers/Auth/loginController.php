@@ -53,18 +53,21 @@ class loginController extends Controller
     //Otp
     public function otp(Request $request) 
     {
+        $request->validate([
+            'token' => 'required|string',
+        ]);
+        
+        // get the user from token
+        $user = $this->authservice->getUserFromToken($request->token);
     
-        // get the user
-        $user =auth()->user();
-
-        //generer le otp
+        // generate the otp
         $otp = $this->authservice->otp($user);
-
+    
         return response([
-            'message' => 'verification reussi ',
+            'message' => 'Verification réussie',
         ], 201);
-       
     }
+    
 
     //verification du code otp
     public function verify(Request $request) :Response
@@ -128,4 +131,5 @@ class loginController extends Controller
         ], 201);
        
     }
+    
 }

@@ -125,4 +125,11 @@ class AuthService{
         //return user
         return $user;
     }
+
+    public function getUserFromToken(string $token): User
+{
+    $userId = auth()->guard('sanctum')->user()->id;
+    return User::find($userId);
+}
+
 }
