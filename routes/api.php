@@ -39,6 +39,8 @@ Route::controller(loginController::class)->group(function(){
     });
 });
 
+Route::middleware('auth:sanctum')->post('/logout', [loginController::class, 'logout']);
+
 
 
 // admin role routes

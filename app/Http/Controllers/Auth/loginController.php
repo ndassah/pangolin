@@ -21,35 +21,54 @@ class loginController extends Controller
     
     //Login
     public function login(Request $request) 
-    {
-        // Validation   
-        $request->validate([
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8',
-        ]);
+{
+    // Validation des champs
+    $request->validate([
+        'email' => 'required|string|email|max:255',
+        'password' => 'required|string|min:8',
+    ]);
 
-        // login
-        $user =$this->authservice->login($request);
+    // Tentative de login
+    $user = $this->authservice->login($request);
 
-        if(!$user){
-            return response([
-                'message' => 'Utilisateur n\'existe pas',
-            ], 401);
-        }
-
-        $token = $user->createToken('pangolin')->plainTextToken;
-        // Retourner une réponse (par exemple, un token d'authentification)
-
+    if (!$user) {
         return response([
-            'message' => 'Utilisateur retouvée ',
-            'results' =>[
-                'user' => new UserResources($user),
-                'token' => $token
-            ]
-        ], 201);
-       
+            'message' => 'Utilisateur n\'existe pas',
+        ], 401);
     }
 
+    // Création de session Laravel pour cet utilisateur
+    auth()->login($user); 
+
+    // Génération du token et récupération du role_id
+    $token = $user->createToken('pangolin')->plainTextToken;
+    return response([
+        'message' => 'Utilisateur authentifié',
+        'results' => [
+            'user' => new UserResources($user),
+            'token' => $token,
+            'role_id' => $user->role_id, // Envoi du role_id dans la réponse
+        ]
+    ], 201);
+
+        $userId = session('user_id');
+        $userEmail = session('user_email');
+        $authToken = session('auth_token');
+    }
+
+    public function logout(Request $request)
+    {
+        // Récupérer l'utilisateur connecté
+        $user = $request->user();
+    
+        // Supprimer tous les tokens de l'utilisateur pour le déconnecter
+        $user->tokens()->delete();
+    
+        return response()->json([
+            'message' => 'Déconnexion réussie',
+        ]);
+    }
+    
     //Otp
     public function otp(Request $request) 
     {

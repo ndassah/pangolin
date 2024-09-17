@@ -11,6 +11,8 @@ class TacheController extends Controller
 {
    
     // Créer une nouvelle tâche (sans attribution directe à un stagiaire)
+
+    
     public function creerEtAttribuerTache(Request $request)
     {
         $validatedData = $request->validate([
