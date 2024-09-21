@@ -11,6 +11,7 @@ use App\Http\Controllers\StageController;
 use App\Http\Controllers\StagiaireController;
 use App\Http\Controllers\SuperviseurController;
 use App\Http\Controllers\TacheController;
+use App\Http\Controllers\TravauxController;
 use Illuminate\Support\Facades\Route;     
 
 /*
@@ -90,6 +91,7 @@ Route::post('activites/update/{id}', [ActiviteeController::class,'update']);
 
 //tache
 Route::post('taches/creer', [TacheController::class, 'creerEtAttribuerTache']);
+Route::get('taches/all', [TacheController::class, 'afficherToutesLesTaches']);
 Route::post('taches/{id}/terminer', [TacheController::class, 'terminerTache']);
 Route::post('taches/{id}/valider', [TacheController::class, 'validerTache']);
 
@@ -100,4 +102,11 @@ Route::get('/evaluation/{stagiaire_id}/rapport', [EvaluationController::class, '
 
 //utilisateur
 Route::get('users/all', [registerController::class,'index']);
+
+//travaux
+Route::post('travaux/creer', [TravauxController::class,'creerTravaux']);
+Route::get('travaux/all', [TravauxController::class,'afficherTousLesTravaux']);
+
+
+//rapport
 

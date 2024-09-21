@@ -11,26 +11,28 @@ class ActiviteeController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $activitees = Activite::with(['taches', 'service'])->get()->map(function ($activitee) {
-            // Récupérer le nombre total de tâches
-            $totalTaches = $activitee->taches->count();
-            // Récupérer le nombre de tâches terminées
-            $tachesTerminees = $activitee->taches->where('statut', 'terminée')->count();
-            // Calculer le pourcentage réalisé
-            $pourcentageRealise = $totalTaches > 0 ? ($tachesTerminees / $totalTaches) * 100 : 0;
-    
-            return [
-                'nom_activites' => $activitee->nom_activites,
-                'description' => $activitee->description,
-                'service' => $activitee->service ? $activitee->service->nom_services : 'Non défini',
-                'nombre_total_taches' => $totalTaches,  // Ajouter le nombre total de tâches
-                'pourcentageRealise' => number_format($pourcentageRealise, 2) . '%'
-            ];
-        });
-    
-        return response()->json($activitees);
-    }
+{
+    $activitees = Activite::with(['taches', 'service'])->get()->map(function ($activitee) {
+        // Récupérer le nombre total de tâches
+        $totalTaches = $activitee->taches->count();
+        // Récupérer le nombre de tâches terminées
+        $tachesTerminees = $activitee->taches->where('statut', 'terminée')->count();
+        // Calculer le pourcentage réalisé
+        $pourcentageRealise = $totalTaches > 0 ? ($tachesTerminees / $totalTaches) * 100 : 0;
+
+        return [
+            'id' => $activitee->id, // Ajouter l'ID de l'activité
+            'nom_activites' => $activitee->nom_activites,
+            'description' => $activitee->description,
+            'service' => $activitee->service ? $activitee->service->nom_services : 'Non défini',
+            'nombre_total_taches' => $totalTaches, // Ajouter le nombre total de tâches
+            'pourcentageRealise' => number_format($pourcentageRealise, 2) . '%'
+        ];
+    });
+
+    return response()->json($activitees);
+}
+
     
 
     /**
@@ -39,7 +41,7 @@ class ActiviteeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nom_activites' => 'required|string|max:100',
+            'nom_activites' => 'required|string|max:100|unique:activites',
             'id_service'=>'required|numeric',
             'description' => 'required|string',
         ]);

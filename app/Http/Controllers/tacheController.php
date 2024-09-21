@@ -12,13 +12,25 @@ class TacheController extends Controller
    
     // Créer une nouvelle tâche (sans attribution directe à un stagiaire)
 
+    public function afficherToutesLesTaches()
+{
+    // Récupérer toutes les tâches
+    $taches = Tache::all();
+
+    // Retourner la réponse JSON
+    return response()->json([
+        'taches' => $taches
+    ], 200);
+}
+
     
     public function creerEtAttribuerTache(Request $request)
-    {
+{
+    try {
         $validatedData = $request->validate([
-            'titre' => 'required|string|max:255',
+            'titre' => 'required|string|max:255|unique:taches',
             'description' => 'required|string|max:255',
-            'duree_prevue' => 'required|numeric',
+            'duree_prevue' => 'required|string',
             'activite_id' => 'required|exists:activites,id',
             'id_superviseur' => 'required|exists:superviseurs,id',
         ]);
@@ -33,35 +45,14 @@ class TacheController extends Controller
         $tache->save();
 
         // Mise à jour du pourcentage de l'activité liée après la création de la tâche
-        $this->mettreAJourPourcentageActivite($tache->id_activites);
+        $this->mettreAJourPourcentageActivite($tache->activite_id);
 
         return response()->json(['message' => 'Tâche créée avec succès.'], 201);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Erreur lors de la création de la tâche.', 'error' => $e->getMessage()], 500);
     }
+}
 
-    // Marquer une tâche comme terminée avec feedback du stagiaire
-    public function terminerTache(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'feedback' => 'required|string|max:500',
-            'duree_effective' => 'required|numeric',
-        ]);
-
-        $tache = Tache::find($id);
-
-        if (!$tache) {
-            return response()->json(['message' => 'Tâche introuvable'], 404);
-        }
-
-        $tache->feedback = $validatedData['feedback'];
-        $tache->duree_effective = $validatedData['duree_effective'];
-        $tache->status = 'terminée';
-        $tache->save();
-
-        // Mise à jour du pourcentage de l'activité liée après la tâche terminée
-        $this->mettreAJourPourcentageActivite($tache->id_activites);
-
-        return response()->json(['message' => 'Tâche marquée comme terminée.'], 200);
-    }
 
     // Validation de la tâche par le superviseur avec une note
     public function validerTache(Request $request, $id)

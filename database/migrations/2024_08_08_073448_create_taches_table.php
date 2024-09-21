@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('taches', function (Blueprint $table) {
             $table->id();
-            $table->string('titre');
+            $table->string('titre')->unique();
             $table->text('description');
             $table->integer('duree_prevue');
             $table->integer('duree_effective')->nullable();

@@ -14,11 +14,20 @@ class SuperviseurController extends Controller
      */
     public function index()
     {
-       // Récupérer les utilisateurs ayant role_id = 3
-    $superviseurs = User::where('role_id', 3)->get();
-
-    return response()->json($superviseurs);
+        // Récupérer les superviseurs avec leur nom depuis la relation avec la table users
+        $superviseurs = Superviseur::with('user')->get();
+    
+        // Retourner uniquement l'id des superviseurs et le nom associé au user_id
+        $formattedSuperviseurs = $superviseurs->map(function ($superviseur) {
+            return [
+                'id' => $superviseur->id,
+                'nom_superviseur' => $superviseur->user->nom, // Nom du superviseur récupéré depuis la relation User
+            ];
+        });
+    
+        return response()->json($formattedSuperviseurs);
     }
+    
 
 
     /**

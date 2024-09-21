@@ -30,18 +30,20 @@ class registerController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'telephone'=>'required|integer',
             'password' => 'required|string|min:8',
+            'service_id' => 'required_if:role_id,3|exists:services,id',
         ]);
 
         // Création   
         $user =$this->authservice->register($request);
 
         $token = $user->createToken('pangolin')->plainTextToken;
-        // Retourner une réponse (par exemple, un token d'authentification)
+        
         return response([
             'message' => 'Utilisateur enregistré avec succès',
             'user' => new UserResources($user),
             'token' => $token
         ], 201);
+
     }
 
     //afficher un user par son id

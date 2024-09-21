@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('activites', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_activites');
+            $table->string('nom_activites')->unique();
             $table->text('description');
             $table->foreignId('id_service')->constrained('services')->onDelete('cascade'); // Relation avec Service
             $table->decimal('pourcentage', 5, 2)->default(0);

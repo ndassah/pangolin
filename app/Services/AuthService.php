@@ -23,6 +23,20 @@ class AuthService{
             'telephone'=>$formattedPhone,
             'password' => Hash::make($request->password),
         ]);
+
+        if ($user->role_id == 3) {
+            // Créer une requête pour passer les informations nécessaires à la création du superviseur
+            $superviseurController = new \App\Http\Controllers\SuperviseurController();
+            $superviseurRequest = new \Illuminate\Http\Request();
+            $superviseurRequest->replace([
+                'user_id' => $user->id,
+                'service_id' => $request->service_id
+            ]);
+            
+            // Appeler la méthode store pour enregistrer le superviseur
+            $superviseurController->store($superviseurRequest);
+        }
+        
         //envoi d'un code de verification
         $this->otp($user);
         return $user;
