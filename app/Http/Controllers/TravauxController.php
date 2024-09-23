@@ -68,14 +68,16 @@ class TravauxController extends Controller
         'description' => 'nullable|string',
         'tache_id' => 'required|exists:taches,id', // La tâche doit exister
         'status' => 'nullable|string|in:en cours,terminé', // Statut optionnel
+        'stagiaire_id' => 'required|exists:stagiaires,id', 
     ]);
 
     // Créer un nouveau travail avec les données validées
     $travail = new Travaux();
-    $travail->nom_travail = $validatedData['nom'];
+    $travail->nom = $validatedData['nom'];
     $travail->description = $validatedData['description'] ?? null;
     $travail->tache_id = $validatedData['tache_id'];
     $travail->status = $validatedData['status'] ?? 'en cours'; // Par défaut en cours
+    $travail->stagiaire_id = $validatedData['stagiaire_id']; 
     $travail->save();
 
     // Mise à jour du pourcentage de la tâche

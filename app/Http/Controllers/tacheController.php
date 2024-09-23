@@ -13,15 +13,16 @@ class TacheController extends Controller
     // Créer une nouvelle tâche (sans attribution directe à un stagiaire)
 
     public function afficherToutesLesTaches()
-{
-    // Récupérer toutes les tâches
-    $taches = Tache::all();
-
-    // Retourner la réponse JSON
-    return response()->json([
-        'taches' => $taches
-    ], 200);
-}
+    {
+        try {
+            $taches = Tache::with('activite', 'superviseur')->get();
+            return response()->json(['taches' => $taches], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur lors de la récupération des tâches.', 'error' => $e->getMessage()], 500);
+        }
+    }
+    
+    
 
     
     public function creerEtAttribuerTache(Request $request)

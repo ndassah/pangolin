@@ -47,16 +47,25 @@ class registerController extends Controller
     }
 
     //afficher un user par son id
-    public function show($id){
-        $user = User::Select(
-            'nom',
-            'prenom',
-            'email',
-            'telephone',
-            'password',
-            
-        );
+    public function show($id)
+    {
+        $user = User::find($id); // Rechercher l'utilisateur par ID
+
+        if ($user) {
+            return new UserResources($user); // Retourner les données de l'utilisateur sous forme de ressource
+        } else {
+            return response()->json(['error' => 'Utilisateur non trouvé'], 404);
+        }
     }
+
+    public function getUser(Request $request)
+{
+    return response()->json([
+        'user' => new UserResources($request->user())
+    ]);
+}
+
+
 
     //afficher tout les user
     public function index(){

@@ -9,10 +9,13 @@ class Travaux extends Model
 {
     use HasFactory;
 
+    protected $table = 'travaux';
+    
     protected $fillable = [
         'nom',
         'tache_id',
         'status', // Peut être 'terminé' ou 'non terminé'
+        'description',
         'stagiaire_id',
     ];
 

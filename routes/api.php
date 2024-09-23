@@ -12,6 +12,8 @@ use App\Http\Controllers\StagiaireController;
 use App\Http\Controllers\SuperviseurController;
 use App\Http\Controllers\TacheController;
 use App\Http\Controllers\TravauxController;
+use App\Http\Resources\UserResources;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;     
 
 /*
@@ -102,6 +104,10 @@ Route::get('/evaluation/{stagiaire_id}/rapport', [EvaluationController::class, '
 
 //utilisateur
 Route::get('users/all', [registerController::class,'index']);
+Route::middleware('auth:sanctum')->get('user', function (Request $request) {
+    return new UserResources($request->user());
+});
+
 
 //travaux
 Route::post('travaux/creer', [TravauxController::class,'creerTravaux']);
