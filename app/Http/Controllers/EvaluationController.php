@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stagiaire;
-use App\Models\Tache;
+use App\Models\Travaux;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class EvaluationController extends Controller
 {
@@ -18,46 +17,41 @@ class EvaluationController extends Controller
             return response()->json(['message' => 'Stagiaire introuvable'], 404);
         }
 
-        $taches = $stagiaire->taches;
+        // Récupération des travaux associés au stagiaire
+        $travaux = Travaux::where('stagiaire_id', $stagiaire_id)->get();
 
-        if ($taches->isEmpty()) {
+        if ($travaux->isEmpty()) {
             return response()->json([
-                'message' => 'Aucune tâche associée à ce stagiaire.',
-                'total_taches' => 0,
-                'taches_bien_faites' => 0,
+                'message' => 'Aucun travail associé à ce stagiaire.',
+                'total_travaux' => 0,
+                'travaux_bien_faits' => 0,
                 'temps_total_prevu' => 0,
                 'temps_total_effectif' => 0,
                 'note_finale' => 0
             ], 200);
         }
 
-        $totalTaches = $taches->count();
-        $tachesBienFaites = $taches->where('note', '>=', 50)
-                                    ->where('validation_superviseur', true)
-                                    ->count();
+        $totalTravaux = $travaux->count();
+        $travauxBienFaits = $travaux->where('note', '>=', 50)
+                                     ->where('status', 'terminé')
+                                     ->count();
 
-        // Utilisation de la durée en minutes directement si les colonnes sont au format de temps
-        $totalTempsPrevus = $taches->sum('duree_prevue');
-        $totalTempsEffectifs = $taches->sum('duree_effective');
+        $totalTempsPrevus = $travaux->sum('duree_prevue');
+        $totalTempsEffectifs = $travaux->sum('duree_effective');
 
-        // Calcul des scores
-        $scoreTaches = ($totalTaches > 0) ? ($tachesBienFaites / $totalTaches) * 100 : 0;
+        $scoreTravaux = ($totalTravaux > 0) ? ($travauxBienFaits / $totalTravaux) * 100 : 0;
         $scoreTemps = ($totalTempsPrevus > 0 && $totalTempsEffectifs > 0) ? min(($totalTempsPrevus / $totalTempsEffectifs) * 100, 100) : 100;
 
-        // Poids des critères
-        $poidsTaches = 0.4; // 40% du score total
-        $poidsTemps = 0.3;  // 30% du score total
-        $poidsQualite = 0.3; // 30% du score total
+        $poidsTravaux = 0.4;
+        $poidsTemps = 0.3;
+        $poidsQualite = 0.3;
 
-        // Score de qualité basé sur les notes
-        $scoreQualite = is_numeric($taches->avg('note')) ? $taches->avg('note') : 0;
-
-        // Calcul de la note finale
-        $noteFinale = ($scoreTaches * $poidsTaches) + ($scoreTemps * $poidsTemps) + ($scoreQualite * $poidsQualite);
+        $scoreQualite = is_numeric($travaux->avg('note')) ? $travaux->avg('note') : 0;
+        $noteFinale = ($scoreTravaux * $poidsTravaux) + ($scoreTemps * $poidsTemps) + ($scoreQualite * $poidsQualite);
 
         return response()->json([
-            'total_taches' => $totalTaches,
-            'taches_bien_faites' => $tachesBienFaites,
+            'total_travaux' => $totalTravaux,
+            'travaux_bien_faits' => $travauxBienFaits,
             'temps_total_prevu' => $totalTempsPrevus,
             'temps_total_effectif' => $totalTempsEffectifs,
             'note_finale' => round($noteFinale, 2)
@@ -72,44 +66,36 @@ class EvaluationController extends Controller
             return response()->json(['message' => 'Stagiaire introuvable'], 404);
         }
 
-        $taches = $stagiaire->taches;
+        $travaux = Travaux::where('stagiaire_id', $stagiaire_id)->get();
 
-        $totalTaches = $taches->count();
-        $tachesBienFaites = $taches->where('note', '>=', 70)
-                                    ->where('validation_superviseur', true)
-                                    ->count();
+        $totalTravaux = $travaux->count();
+        $travauxBienFaits = $travaux->where('note', '>=', 70)
+                                     ->where('status', 'terminé')
+                                     ->count();
 
-        // Calcul des durées
-        $totalTempsPrevus = $taches->sum('duree_prevue');
-        $totalTempsEffectifs = $taches->sum('duree_effective');
+        $totalTempsPrevus = $travaux->sum('duree_prevue');
+        $totalTempsEffectifs = $travaux->sum('duree_effective');
 
-        // Calcul des scores
-        $scoreTaches = ($totalTaches > 0) ? ($tachesBienFaites / $totalTaches) * 100 : 0;
+        $scoreTravaux = ($totalTravaux > 0) ? ($travauxBienFaits / $totalTravaux) * 100 : 0;
         $scoreTemps = ($totalTempsPrevus > 0 && $totalTempsEffectifs > 0) ? min(($totalTempsPrevus / $totalTempsEffectifs) * 100, 100) : 100;
 
-        // Poids des critères
-        $poidsTaches = 0.4;
+        $poidsTravaux = 0.4;
         $poidsTemps = 0.3;
         $poidsQualite = 0.3;
 
-        // Score de qualité basé sur la moyenne des notes
-        $scoreQualite = $taches->avg('note') ?: 0;
+        $scoreQualite = $travaux->avg('note') ?: 0;
+        $noteFinale = ($scoreTravaux * $poidsTravaux) + ($scoreTemps * $poidsTemps) + ($scoreQualite * $poidsQualite);
 
-        // Calcul de la note finale
-        $noteFinale = ($scoreTaches * $poidsTaches) + ($scoreTemps * $poidsTemps) + ($scoreQualite * $poidsQualite);
-
-        // Générer le PDF à partir de la vue 'evaluation.rapport'
         $pdf = FacadePdf::loadView('evaluation.rapport', [
             'stagiaire' => $stagiaire,
-            'taches' => $taches,
+            'travaux' => $travaux,
             'note_finale' => round($noteFinale, 2),
-            'total_taches' => $totalTaches,
-            'taches_bien_faites' => $tachesBienFaites,
+            'total_travaux' => $totalTravaux,
+            'travaux_bien_faits' => $travauxBienFaits,
             'temps_total_prevu' => $totalTempsPrevus,
             'temps_total_effectif' => $totalTempsEffectifs
         ]);
 
-        // Téléchargement du fichier PDF
         return $pdf->download('rapport_evaluation_stagiaire_'.$stagiaire->user->name.'.pdf');
     }
 }

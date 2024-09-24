@@ -65,4 +65,24 @@ class DirectionController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function etude($id)
+{
+    // Récupérer la direction et ses activités
+    $direction = Direction::with('services.activites')->findOrFail($id);
+    
+    // Calculer le taux de réalisation pour chaque activité
+    $data = $direction->services->flatMap(function ($service) {
+        return $service->activites->map(function ($activite) {
+            return [
+                'nom' => $activite->nom,
+                'taux_realisation' => $activite->taches->where('status', 'terminée')->count() / $activite->taches->count() * 100,
+                'nombre_activites' => $activite->taches->count(),
+            ];
+        });
+    });
+    
+    return response()->json($data);
+}
+
 }

@@ -115,4 +115,4 @@ Route::get('travaux/all', [TravauxController::class,'afficherTousLesTravaux']);
 
 
 //rapport
-
+Route::get('/direction/{id}/etude', [DirectionController::class, 'etude']);
