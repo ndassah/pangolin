@@ -24,17 +24,17 @@ class AuthService{
             'password' => Hash::make($request->password),
         ]);
 
-        if ($user->role_id == 3) {
-            // Créer une requête pour passer les informations nécessaires à la création du superviseur
-            $superviseurController = new \App\Http\Controllers\SuperviseurController();
-            $superviseurRequest = new \Illuminate\Http\Request();
-            $superviseurRequest->replace([
+        if ($user->role_id == 3 || $user->role_id == 4) {
+            // Créer une requête pour passer les informations nécessaires à la création du superviseur ou du stagiaire
+            $controller = $user->role_id == 3 ? new \App\Http\Controllers\SuperviseurController() : new \App\Http\Controllers\StagiaireController();
+            $controllerRequest = new \Illuminate\Http\Request();
+            $controllerRequest->replace([
                 'user_id' => $user->id,
-                'service_id' => $request->service_id
+                'service_id' => $request->service_id // Si ce champ est pertinent pour les deux rôles
             ]);
-            
-            // Appeler la méthode store pour enregistrer le superviseur
-            $superviseurController->store($superviseurRequest);
+    
+            // Appeler la méthode store pour enregistrer le superviseur ou le stagiaire
+            $controller->store($controllerRequest);
         }
         
         //envoi d'un code de verification

@@ -15,13 +15,20 @@ class StagiaireController extends Controller
      */
     public function index()
     {
-        // Récupérer les utilisateurs ayant le role_id correspondant à "stagiaire"
-        $stagiaires = User::whereHas('role', function ($query) {
-            $query->where('name', 'stagiaire');
-        })->get();
-
-        return response()->json($stagiaires);
+        // Récupérer les superviseurs avec leur nom depuis la relation avec la table users
+        $stagiaires = Stagiaire::with('user')->get();
+    
+        // Retourner uniquement l'id des superviseurs et le nom associé au user_id
+        $formattedStagiaires = $stagiaires->map(function ($stagiaire) {
+            return [
+                'id' => $stagiaire->id,
+                'nom' => $stagiaire->user->nom, // Nom du superviseur récupéré depuis la relation User
+            ];
+        });
+    
+        return response()->json($formattedStagiaires);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -30,18 +37,16 @@ class StagiaireController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'stage_id' => 'required|exists:stages,id',
             'service_id' => 'required|exists:services,id',
         ]);
 
         $stagiaire = Stagiaire::create([
             'uuid'=> Str::uuid(),
             'user_id' => $validated['user_id'],
-            'stage_id' => $validated['stage_id'],
             'service_id' => $validated['service_id'],
         ]);
 
-        return response()->json($stagiaire->load(['user', 'stage', 'service']), 201);
+        return response()->json($stagiaire->load(['user', 'service']), 201);
     }
 
     /**
@@ -49,7 +54,7 @@ class StagiaireController extends Controller
      */
     public function show(string $id)
     {
-        $stagiaire = Stagiaire::with(['user', 'stage', 'service', 'activitees', 'rapports'])->findOrFail($id);
+        $stagiaire = Stagiaire::with(['user', 'service', 'activitees', 'rapports'])->findOrFail($id);
         return response()->json($stagiaire);
     }
 
@@ -61,16 +66,14 @@ class StagiaireController extends Controller
         $stagiaire = Stagiaire::findOrFail($id);
 
         $validated = $request->validate([
-            'stage_id' => 'sometimes|exists:stages,id',
             'service_id' => 'sometimes|exists:services,id',
         ]);
 
         $stagiaire->update(array_filter([
-            'stage_id' => $validated['stage_id'] ?? $stagiaire->stage_id,
             'service_id' => $validated['service_id'] ?? $stagiaire->service_id,
         ]));
 
-        return response()->json($stagiaire->load(['user', 'stage', 'service']));
+        return response()->json($stagiaire->load(['user', 'service']));
     }
 
     /**

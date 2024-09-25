@@ -15,7 +15,6 @@ class Stagiaire extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-        'stage_id',
         'service_id',
     ];
 
