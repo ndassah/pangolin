@@ -26,6 +26,6 @@ class Travaux extends Model
 
     public function stagiaire()
     {
-        return $this->belongsTo(Stagiaire::class);
+        return $this->belongsTo(Stagiaire::class,'stagiaire_id');
     }
 }

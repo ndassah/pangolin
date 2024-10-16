@@ -112,6 +112,7 @@ Route::middleware('auth:sanctum')->get('user', function (Request $request) {
 //travaux
 Route::post('travaux/creer', [TravauxController::class,'creerTravaux']);
 Route::get('travaux/all', [TravauxController::class,'afficherTousLesTravaux']);
+Route::put('travaux/marquer-termine/{id}', [TravauxController::class,'marquerTravauxTermine']);
 
 
 //rapport

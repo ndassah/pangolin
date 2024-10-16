@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activite;
 use App\Models\Travaux;
 use App\Models\Tache;
+use App\Events\TravailCree;
 use Illuminate\Http\Request;
 
 class TravauxController extends Controller
@@ -68,7 +69,7 @@ class TravauxController extends Controller
         'description' => 'nullable|string',
         'tache_id' => 'required|exists:taches,id', // La tâche doit exister
         'status' => 'nullable|string|in:en cours,terminé', // Statut optionnel
-        'stagiaire_id' => 'required|string|exists:stagiaires,id', 
+        'stagiaire_id' => 'required|exists:stagiaires,id', 
     ]);
 
     // Créer un nouveau travail avec les données validées
@@ -77,11 +78,13 @@ class TravauxController extends Controller
     $travail->description = $validatedData['description'] ?? null;
     $travail->tache_id = $validatedData['tache_id'];
     $travail->status = $validatedData['status'] ?? 'en cours'; // Par défaut en cours
-    $travail->stagiaire = $validatedData['stagiaire_id'];
+    $travail->stagiaire_id = $validatedData['stagiaire_id'];
     $travail->save();
 
     // Mise à jour du pourcentage de la tâche
     $this->mettreAJourPourcentageTache($travail->tache_id);
+
+    event(new TravailCree($travail));//evenement de creation
 
     return response()->json([
         'message' => 'Travail créé avec succès.',
