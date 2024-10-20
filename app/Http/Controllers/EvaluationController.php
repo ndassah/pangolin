@@ -97,8 +97,8 @@ class EvaluationController extends Controller
     ]);
 
     // Téléchargement du rapport en PDF avec le nom du stagiaire
+    // Cela permettra à l'utilisateur de choisir où enregistrer le fichier
     return $pdf->download('rapport_evaluation_stagiaire_'.$stagiaire->user->name.'.pdf');
 }
-
 
 }

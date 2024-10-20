@@ -29,8 +29,8 @@
     <h1>Rapport d'évaluation du stagiaire</h1>
 
     <!-- Vérification de l'existence du nom du stagiaire et de son service -->
-    <p><strong>Stagiaire :</strong> {{ $stagiaire->user->name ?? 'Nom non disponible' }}</p>
-    <p><strong>Service :</strong> {{ $stagiaire->service->nom ?? 'Service non disponible' }}</p>
+    <p><strong>Stagiaire :</strong> {{ $stagiaire->user->nom ?? 'Nom non disponible' }}</p>
+    <p><strong>Service :</strong> {{ $stagiaire->service->nom_services ?? 'Service non disponible' }}</p>
     <p><strong>Date d'évaluation :</strong> {{ \Carbon\Carbon::now()->format('d/m/Y') }}</p>
 
     <h3>Détails des tâches :</h3>
@@ -46,19 +46,19 @@
                     <th>Description</th>
                     <th>Durée prévue</th>
                     <th>Durée effective</th>
-                    <th>Note</th>
-                    <th>Validation</th>
+                    <th>Tache d'origine</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($travaux as $tache)
                     <tr>
-                        <td>{{ $tache->titre ?? 'Non disponible' }}</td>
+                        <td>{{ $tache->nom ?? 'Non disponible' }}</td>
                         <td>{{ $tache->description ?? 'Non disponible' }}</td>
                         <td>{{ $tache->duree_prevue ?? 'Non disponible' }}</td>
                         <td>{{ $tache->duree_effective ?? 'Non disponible' }}</td>
-                        <td>{{ $tache->note ?? 'Non notée' }}</td>
-                        <td>{{ $tache->validation_superviseur ? 'Validée' : 'Non validée' }}</td>
+                        <td>{{ $tache->tache_id ?? 'Non notée' }}</td>
+                        <td>{{ $tache->status ?? 'Non disponible' }}</td>
                     </tr>
                 @endforeach
             </tbody>
