@@ -84,6 +84,7 @@ Route::post('service/update/{id}', [ServiceController::class,'update']);
 //superiseur
 Route::post('superviseur/create', [SuperviseurController::class,'store']);
 Route::get('superviseur/all',[SuperviseurController::class,'index']);
+Route::get('superviseur/all/{id}',[SuperviseurController::class,'show']);
 Route::post('superviseur/update/{id}', [SuperviseurController::class,'update']);
 
 //activites

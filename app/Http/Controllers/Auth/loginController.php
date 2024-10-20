@@ -39,6 +39,7 @@ class loginController extends Controller
 
     // Création de session Laravel pour cet utilisateur
     auth()->login($user); 
+    session(['user_id' => $user->id]);
 
     // Génération du token et récupération du role_id
     $token = $user->createToken('pangolin')->plainTextToken;
@@ -47,13 +48,15 @@ class loginController extends Controller
         'results' => [
             'user' => new UserResources($user),
             'token' => $token,
-            'role_id' => $user->role_id, // Envoi du role_id dans la réponse
+            'role_id' => $user->role_id,
+            'user_id' => $user->id,
         ]
     ], 201);
 
         $userId = session('user_id');
         $userEmail = session('user_email');
         $authToken = session('auth_token');
+
     }
 
     public function logout(Request $request)

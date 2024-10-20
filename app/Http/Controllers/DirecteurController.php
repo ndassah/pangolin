@@ -31,4 +31,16 @@ class DirecteurController extends Controller
             'data' => $directeur,
         ]);
     }
+
+    public function show(string $id)
+    {
+        // Récupérer l'utilisateur par son ID avec les informations nécessaires
+        $user = User::select('id', 'nom', 'prenom', 'email', 'telephone')
+                    ->findOrFail($id); // Trouver l'utilisateur par son ID ou échouer
+        
+        // Retourner les informations de l'utilisateur sous forme de réponse JSON
+        return response()->json([
+            'user' => $user,
+        ]);
+    }
 }

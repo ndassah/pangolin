@@ -53,10 +53,19 @@ class SuperviseurController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        $superviseur = Superviseur::with('user')->findOrFail($id);
-        return response()->json($superviseur);
-    }
+{
+    // Récupérer l'utilisateur par son ID avec les informations nécessaires
+    $user = User::select('id', 'nom', 'prenom', 'email', 'telephone')
+                ->findOrFail($id); // Trouver l'utilisateur par son ID ou échouer
+    
+    // Retourner les informations de l'utilisateur sous forme de réponse JSON
+    return response()->json([
+        'user' => $user,
+    ]);
+}
+
+    
+
 
     /**
      * Update the specified resource in storage.
