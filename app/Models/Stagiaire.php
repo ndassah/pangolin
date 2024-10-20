@@ -42,10 +42,7 @@ class Stagiaire extends Model
         return $this->belongsTo(Service::class);
     }
     
-    //relation avec le stage
-    public function stage(){
-        return $this->hasOne(Stage::class);
-    }
+
 
     //relation avec le profil
     // public function profil(){

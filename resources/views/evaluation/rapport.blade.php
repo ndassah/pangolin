@@ -27,36 +27,43 @@
 </head>
 <body>
     <h1>Rapport d'évaluation du stagiaire</h1>
-    <p><strong>Stagiaire :</strong> {{ $stagiaire->user->name }}</p>
-    <p><strong>Stage :</strong> {{ $stagiaire->stage->titre }}</p>
-    <p><strong>Service :</strong> {{ $stagiaire->service->nom }}</p>
+
+    <!-- Vérification de l'existence du nom du stagiaire et de son service -->
+    <p><strong>Stagiaire :</strong> {{ $stagiaire->user->name ?? 'Nom non disponible' }}</p>
+    <p><strong>Service :</strong> {{ $stagiaire->service->nom ?? 'Service non disponible' }}</p>
     <p><strong>Date d'évaluation :</strong> {{ \Carbon\Carbon::now()->format('d/m/Y') }}</p>
 
     <h3>Détails des tâches :</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Titre de la tâche</th>
-                <th>Description</th>
-                <th>Durée prévue</th>
-                <th>Durée effective</th>
-                <th>Note</th>
-                <th>Validation</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($taches as $tache)
+
+    <!-- Vérification si des travaux sont passés à la vue -->
+    @if ($travaux->isEmpty())
+        <p>Aucun travail associé au stagiaire.</p>
+    @else
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ $tache->titre }}</td>
-                    <td>{{ $tache->description }}</td>
-                    <td>{{ $tache->duree_prevue }}</td>
-                    <td>{{ $tache->duree_effective }}</td>
-                    <td>{{ $tache->note }}</td>
-                    <td>{{ $tache->validation_superviseur ? 'Validée' : 'Non validée' }}</td>
+                    <th>Titre de la tâche</th>
+                    <th>Description</th>
+                    <th>Durée prévue</th>
+                    <th>Durée effective</th>
+                    <th>Note</th>
+                    <th>Validation</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($travaux as $tache)
+                    <tr>
+                        <td>{{ $tache->titre ?? 'Non disponible' }}</td>
+                        <td>{{ $tache->description ?? 'Non disponible' }}</td>
+                        <td>{{ $tache->duree_prevue ?? 'Non disponible' }}</td>
+                        <td>{{ $tache->duree_effective ?? 'Non disponible' }}</td>
+                        <td>{{ $tache->note ?? 'Non notée' }}</td>
+                        <td>{{ $tache->validation_superviseur ? 'Validée' : 'Non validée' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 
     <h3>Note finale :</h3>
     <p><strong>{{ $note_finale }}/100</strong></p>

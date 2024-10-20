@@ -14,9 +14,6 @@ class Stage extends Model
         'date_fin',
     ];
 
-    public function stagiaire(){
-        return $this->hasMany(Stagiaire::class);
-    }
 
     //relation avec service
     public function service(){
